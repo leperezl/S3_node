@@ -22,15 +22,16 @@ fs.readFileSync(html2, 'utf8', function(err,data){
 const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
-    if (req === 'http://localhost:8081/api/proveedores'){
-        getRequest(provlink)
-        DataProv()
+    if (req.url === 'get'+'http://localhost:8081/api/proveedores'){
+      getRequest(provlink)
+      DataProv()
+      res.write(path)
     }
-    if (req === 'http://localhost:8081/api/clientes'){
+    if (req.url === 'http://localhost:8081/api/clientes'){
       getRequest(clientlink)
       DataClient()
   }
-    res.end('<h1>Hello World</h1>');
+    //res.end('<h1>Hello World</h1>');
   });
   server.listen(8081);
 
@@ -50,13 +51,18 @@ const getRequest = async (link) => {
 };
 
 const DataClient = () =>{
+  let tableData
   target.forEach(element => {
-    path2.replace('???', "<td><tr>element.idcliente</tr><tr>element.nombrecompania</tr><tr>element.nombrecontacto</tr></td>");
-  })};
+    tableData = tableData + "<td><tr>element.idcliente</tr><tr>element.nombrecompania</tr><tr>element.nombrecontacto</tr></td>"
+  })
+  path.replace('???', tableData);
+};
 
-const DataProv= () =>{
+const DataProv = () =>{
+  let tableData
   target.forEach(element => {
-    path.replace('???', "<td><tr>element.idprooveedor</tr><tr>element.nombrecompania</tr><tr>element.nombrecontacto</tr></td>");
-})};
-
+    tableData = tableData + "<td><tr>element.idproveedor</tr><tr>element.nombrecompania</tr><tr>element.nombrecontacto</tr></td>"
+  })
+  path2.replace('???', tableData);
+};
 
