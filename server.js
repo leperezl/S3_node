@@ -1,4 +1,6 @@
 //192.168.68.110
+//Author: Luis Eduardo Perez 201714355  
+// Web 2021-2
 const http= require('http');
 const axios = require('axios')
 const fs = require('fs')
@@ -24,9 +26,9 @@ http.createServer(async function(req, res){
     res.setHeader('Content-Type', 'text/html');
     //console.log(req.url)
     if (req.url === '/api/clientes'){
-      getRequest(clientlink)
-      let targetclient 
-      DataClient(targetclient, path)
+      let targetclient= await getRequest(clientlink)   
+      let finalhtmlclient=DataClient(targetclient)
+      res.write(finalhtmlclient)
     }
     if (req.url === '/api/proveedores'){     
       const targetprov = await getRequest(provlink)
@@ -49,8 +51,9 @@ async function getRequest(link) {
 const DataClient = (dat) =>{
   let tableData=""
   dat.forEach(element => {
-    tableData = tableData + "<tr><td>"+element.idcliente+"</td><td>"+element.nombrecompania+"</td><td>"+element.nombrecontacto+"</td></tr>"
-  path.replace('???', tableData);
+    tableData += "<tr><td>"+element.idCliente+"</td><td>"+element.NombreCompania+"</td><td>"+element.NombreContacto+"</td></tr>"
+  })
+  return path.replace('???', tableData);
 };
 
 const DataProv = (dat) =>{
@@ -59,7 +62,6 @@ const DataProv = (dat) =>{
   dat.forEach(element => {
     tableData += "<tr><td>"+element.idproveedor+"</td><td>"+element.nombrecompania+"</td><td>"+element.nombrecontacto+"</td></tr>"
   })
-  console.log(tableData)
   return path2.replace('???', tableData);
   
 };
