@@ -8,61 +8,59 @@ const port = 8081;
 
 const html1= './table.html'
 const html2= './tableProv.html'
-let path 
-let path2
 
-fs.readFileSync(html1, 'utf8', function(err,data){
-    path = data
+
+let path =fs.readFileSync(html1, 'utf8', function files(err,data){
+    return data
 });
 
-fs.readFileSync(html2, 'utf8', function(err,data){
-    path2 = data
+let path2 = fs.readFileSync(html2, 'utf8', function(err,data){
+    return data
 });
 
-const server = http.createServer((req, res) => {
+http.createServer(async function(req, res){
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    if (req.url === 'get'+'http://localhost:8081/api/proveedores'){
-      getRequest(provlink)
-      DataProv()
-      res.write(path)
-    }
-    if (req.url === 'http://localhost:8081/api/clientes'){
+
+    res.setHeader('Content-Type', 'text/html');
+    //console.log(req.url)
+    if (req.url === '/api/clientes'){
       getRequest(clientlink)
-      DataClient()
-  }
+      let targetclient 
+      DataClient(targetclient, path)
+    }
+    if (req.url === '/api/proveedores'){     
+      const targetprov = await getRequest(provlink)
+      let finalhtmlprov =DataProv(targetprov)
+      res.write(finalhtmlprov)
+    }
     //res.end('<h1>Hello World</h1>');
-  });
-  server.listen(8081);
+  }).listen(8081);
 
 const provlink = 'https://gist.githubusercontent.com/josejbocanegra/d3b26f97573a823a9d0df4ec68fef45f/raw/66440575649e007a9770bcd480badcbbc6a41ba7/proveedores.json';
 const clientlink = 'https://gist.githubusercontent.com/josejbocanegra/986182ce2dd3e6246adcf960f9cda061/raw/f013c156f37c34117c0d4ba9779b15d427fb8dcd/clientes.json';
-let target
+let targetclient 
+let targetprov
 
-const getRequest = async (link) => {
-  try {
-      const response = await axios.get('link');
-      target = response;
-
-  } catch (err) {
-
-      console.error(err);
-  }
+async function getRequest(link) {
+      const response = await axios.get(link);
+      return response.data;
 };
 
-const DataClient = () =>{
-  let tableData
-  target.forEach(element => {
-    tableData = tableData + "<td><tr>element.idcliente</tr><tr>element.nombrecompania</tr><tr>element.nombrecontacto</tr></td>"
-  })
+const DataClient = (dat) =>{
+  let tableData=""
+  dat.forEach(element => {
+    tableData = tableData + "<tr><td>"+element.idcliente+"</td><td>"+element.nombrecompania+"</td><td>"+element.nombrecontacto+"</td></tr>"
   path.replace('???', tableData);
 };
 
-const DataProv = () =>{
-  let tableData
-  target.forEach(element => {
-    tableData = tableData + "<td><tr>element.idproveedor</tr><tr>element.nombrecompania</tr><tr>element.nombrecontacto</tr></td>"
+const DataProv = (dat) =>{
+
+  let tableData= ""
+  dat.forEach(element => {
+    tableData += "<tr><td>"+element.idproveedor+"</td><td>"+element.nombrecompania+"</td><td>"+element.nombrecontacto+"</td></tr>"
   })
-  path2.replace('???', tableData);
+  console.log(tableData)
+  return path2.replace('???', tableData);
+  
 };
 
