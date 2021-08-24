@@ -4,7 +4,8 @@
   "description": "Server for displaying information into a webpage",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "/home/lepert/Documents/UNI/S9_202120/WEB/S3_node"
   },
   "repository": {
     "type": "git",
